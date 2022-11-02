@@ -4,7 +4,7 @@ RCレシーバーのPWM波(2チャンネル)をESP32を用いて測定し，同�
 
 This program measures the PWM wave (2 channel) of the RC receiver using ESP32 and outputs a PWM wave with the same rise length.
 
-### TwistToPWMServo.ino
+### TwistToPWMServo.ino (Sample program with ros2)
 micro-rosを用いてESP32でTwistトピックをサブスクライブし，サーボにPWM波を出力するプログラムです．
 
-This program subscribes Twist topic with ESP32 using micro-ros and outputs PWM wave to the servo.
+This program subscribes Twist topic on ESP32 using micro-ros and outputs PWM wave to the servo.
