@@ -58,13 +58,21 @@ void interrupt_r_change(){
 
 // PWM OUT functions
 void pwm_l() {
-  int time_pwm_l = (time_l_high > SERVO_LIMIT_LOW && time_l_high < SERVO_LIMIT_HIGH) ? time_l_high : SERVO_HOME;
+  
+  int time_pwm_l = SERVO_HOME;
+  time_pwm_l = (time_l_high < SERVO_LIMIT_LOW) ? SERVO_LIMIT_LOW : time_l_high;
+  time_pwm_l = (time_l_high > SERVO_LIMIT_HIGH) ? SERVO_LIMIT_HIGH : time_l_high;
+  
   digitalWrite(OUT_PIN_L, HIGH);
   delayMicroseconds(time_pwm_l);
   digitalWrite(OUT_PIN_L, LOW);
 }
 void pwm_r() {
-  int time_pwm_r = (time_r_high > SERVO_LIMIT_LOW && time_r_high < SERVO_LIMIT_HIGH) ? time_r_high : SERVO_HOME;
+
+  int time_pwm_r = SERVO_HOME;
+  time_pwm_r = (time_r_high < SERVO_LIMIT_LOW) ? SERVO_LIMIT_LOW : time_r_high;
+  time_pwm_r = (time_r_high > SERVO_LIMIT_HIGH) ? SERVO_LIMIT_HIGH : time_r_high;
+
   digitalWrite(OUT_PIN_R, HIGH);
   delayMicroseconds(time_pwm_r);
   digitalWrite(OUT_PIN_R, LOW);
