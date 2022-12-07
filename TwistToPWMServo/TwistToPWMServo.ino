@@ -10,14 +10,16 @@
 // pwm output header
 #include <Ticker.h>
 
-// ros2 define
+// PIN define
 #define ERROR_LED_PIN 12
+#define OUT_PIN_L 13 // connect to Left Sabertooth input
+#define OUT_PIN_R 14 // connect to Right Sabertooth input
+
+// ros2 define
 #define RCCHECK(fn) { rcl_ret_t temp_rc = fn; if((temp_rc != RCL_RET_OK)){error_loop();}}
 #define RCSOFTCHECK(fn) { rcl_ret_t temp_rc = fn; if((temp_rc != RCL_RET_OK)){error_loop();}}
 
 // output pwm param
-#define OUT_PIN_L 13 // connect to Left Sabertooth input
-#define OUT_PIN_R 14 // connect to Right Sabertooth input
 #define OUTPUT_PWM_T_MS 20// T[ms]
 #define SERVO_HOME 1491// [us]
 #define SERVO_LIMIT_LOW 1050// [us]
@@ -77,7 +79,11 @@ void twist_callback(const void *msgin) {
 
 void ros2_init() {
 
-  set_microros_transports();
+  //set_microros_transports(); // connect with USB
+  set_microros_wifi_transports("aterm-7842f1", "31dfe778e93c0", "192.168.179.3", 8888); // Connect with Wifi. IP: Host PC IP adress runnning micro-ros agent
+
+  digitalWrite(ERROR_LED_PIN, HIGH);
+  delay(2000);
   
   allocator = rcl_get_default_allocator();
 
@@ -118,8 +124,6 @@ void setup() {
   
   pinMode(ERROR_LED_PIN, OUTPUT);
 
-  ros2_init();
-
   // PWM OUT setting
   pinMode(OUT_PIN_L, OUTPUT);
   pinMode(OUT_PIN_R, OUTPUT);
@@ -128,6 +132,8 @@ void setup() {
 
   time_l_high = SERVO_HOME;
   time_r_high = SERVO_HOME;
+
+  ros2_init();
 
 }
 
