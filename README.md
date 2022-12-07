@@ -11,11 +11,11 @@ This program subscribes Twist topic on ESP32 using micro-ros and outputs PWM wav
 
 Connect micro-ros-agent to ros2-for-arduino
 
-If USB (/dev/ttyUSB0)
+If connected USB serial (/dev/ttyUSB0)
 
 $ ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyUSB0 -v6
 
-If Wifi
+If connected Wifi
 
 $ ros2 run micro_ros_agent micro_ros_agent udp4 --port 8888 -v6
 
