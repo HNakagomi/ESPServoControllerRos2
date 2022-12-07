@@ -79,7 +79,7 @@ void twist_callback(const void *msgin) {
 
 void ros2_init() {
 
-  //set_microros_transports(); // connect with USB
+  //set_microros_transports(); // connect with USB serial
   set_microros_wifi_transports("aterm-7842f1", "31dfe778e93c0", "192.168.179.3", 8888); // Connect with Wifi. IP: Host PC IP adress runnning micro-ros agent
 
   digitalWrite(ERROR_LED_PIN, HIGH);
