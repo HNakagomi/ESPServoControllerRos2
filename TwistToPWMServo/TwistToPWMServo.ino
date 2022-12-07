@@ -72,7 +72,7 @@ void twist_callback(const void *msgin) {
   time_r_high = time_r_high < SERVO_LIMIT_LOW ? SERVO_LIMIT_LOW : time_r_high;
 
   // for debag
-  digitalWrite(ERROR_LED_PIN, (msg->linear.x > 0) ? LOW : HIGH);
+  digitalWrite(ERROR_LED_PIN, (msg->linear.x > 0) ? HIGH : LOW);
   
 }
 
