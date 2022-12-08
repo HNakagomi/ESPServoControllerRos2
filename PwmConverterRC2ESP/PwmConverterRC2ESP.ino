@@ -1,8 +1,8 @@
 #include <Ticker.h>
 
 // read pwm param
-#define INTERRUPT_PIN_L 34 // connect to receiver "3ch" Left Stick
-#define INTERRUPT_PIN_R 16 // connect to receiver "5ch" Right Stick
+#define INTERRUPT_PIN_L 34 // connect to receiver "1ch" Left Stick
+#define INTERRUPT_PIN_R 16 // connect to receiver "3ch" Right Stick
 #define INPUT_PWM_T_US 20000// T[us]
 
 // output pwm param

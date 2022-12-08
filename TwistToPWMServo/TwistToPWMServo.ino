@@ -25,6 +25,11 @@
 #define SERVO_LIMIT_LOW 1050// [us]
 #define SERVO_LIMIT_HIGH 1950// [us]
 
+// ROBOT kinematics param
+#define RK_D 0.5 // [m] robot rotation radius
+#define RK_VMAX 8.0 // [v/sec] max speed in Servo LIMIT HIGH
+#define RK_VMIN -8.0 // [v/sec] min speed in Servo LIMIT LOW
+
 // global variables for ros2
 rcl_subscription_t subscriber;
 geometry_msgs__msg__Twist msg;
@@ -38,6 +43,20 @@ Ticker servo_l;
 Ticker servo_r;
 volatile int time_l_high = SERVO_HOME;
 volatile int time_r_high = SERVO_HOME;
+
+// PWM OUT functions
+void pwm_l() {
+  int time_pwm_l = time_l_high;
+  digitalWrite(OUT_PIN_L, HIGH);
+  delayMicroseconds(time_pwm_l);
+  digitalWrite(OUT_PIN_L, LOW);
+}
+void pwm_r() {
+  int time_pwm_r = time_r_high;
+  digitalWrite(OUT_PIN_R, HIGH);
+  delayMicroseconds(time_pwm_r);
+  digitalWrite(OUT_PIN_R, LOW);
+}
 
 void error_loop(){
   while(1){
@@ -53,15 +72,15 @@ void twist_callback(const void *msgin) {
 
   float v = msg->linear.x;//[m/sec]
   float w = msg->angular.z;//[rad/sec]
-  float d = 0.5f;// (robot_rotation_radius / 2.0) [m]
+  float d = RK_D;// (robot_rotation_radius / 2.0) [m]
 
   // twist to LR Wheel speed (differential drive robot model) 
   float vel_l = v - d*w;
   float vel_r = v + d*w;
 
   // Wheel speed to PWM high length
-  float vmax = 5.0f;//[m/sec]
-  float vmin = -5.0f;//[m/sec]
+  float vmax = RK_VMAX;//[m/sec]
+  float vmin = RK_VMIN;//[m/sec]
   time_l_high = (vel_l - vmin)/(vmax - vmin)*(SERVO_LIMIT_HIGH-SERVO_LIMIT_LOW) + SERVO_LIMIT_LOW;
   time_r_high = (vel_r - vmin)/(vmax - vmin)*(SERVO_LIMIT_HIGH-SERVO_LIMIT_LOW) + SERVO_LIMIT_LOW;
 
@@ -106,33 +125,20 @@ void ros2_init() {
 
 }
 
-// PWM OUT functions
-void pwm_l() {
-  int time_pwm_l = time_l_high;
-  digitalWrite(OUT_PIN_L, HIGH);
-  delayMicroseconds(time_pwm_l);
-  digitalWrite(OUT_PIN_L, LOW);
-}
-void pwm_r() {
-  int time_pwm_r = time_r_high;
-  digitalWrite(OUT_PIN_R, HIGH);
-  delayMicroseconds(time_pwm_r);
-  digitalWrite(OUT_PIN_R, LOW);
-}
-
 void setup() {
-  
-  pinMode(ERROR_LED_PIN, OUTPUT);
 
-  // PWM OUT setting
+  // PIN setting
+  pinMode(ERROR_LED_PIN, OUTPUT);
   pinMode(OUT_PIN_L, OUTPUT);
   pinMode(OUT_PIN_R, OUTPUT);
+
+  // PWMOut setting
   servo_l.attach_ms(OUTPUT_PWM_T_MS, pwm_l);//"pwm_l"called repeatedly every PWM_T[ms]
   servo_r.attach_ms(OUTPUT_PWM_T_MS, pwm_r);//"pwm_r"called repeatedly every PWM_T[ms]
-
   time_l_high = SERVO_HOME;
   time_r_high = SERVO_HOME;
 
+  // ROS2 Subscriber setting
   ros2_init();
 
 }
