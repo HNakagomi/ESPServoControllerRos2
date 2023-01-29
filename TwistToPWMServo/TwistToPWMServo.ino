@@ -11,9 +11,9 @@
 #include <Ticker.h>
 
 // PIN define
-#define ERROR_LED_PIN 12
-#define OUT_PIN_L 13 // connect to Left Sabertooth input
-#define OUT_PIN_R 14 // connect to Right Sabertooth input
+#define ERROR_LED_PIN 0
+#define OUT_PIN_L 23 //13 // connect to Left Sabertooth input
+#define OUT_PIN_R 4 //14 // connect to Right Sabertooth input
 
 // ros2 define
 #define RCCHECK(fn) { rcl_ret_t temp_rc = fn; if((temp_rc != RCL_RET_OK)){error_loop();}}
@@ -98,8 +98,8 @@ void twist_callback(const void *msgin) {
 
 void ros2_init() {
 
-  //set_microros_transports(); // connect with USB serial
-  set_microros_wifi_transports("aterm-7842f1", "31dfe778e93c0", "192.168.179.3", 8888); // Connect with Wifi. IP: Host PC IP adress runnning micro-ros agent
+  set_microros_transports(); // connect with USB serial
+  //set_microros_wifi_transports("aterm-7842f1", "31dfe778e93c0", "192.168.179.3", 8888); // Connect with Wifi. IP: Host PC IP adress runnning micro-ros agent
 
   digitalWrite(ERROR_LED_PIN, HIGH);
   delay(2000);

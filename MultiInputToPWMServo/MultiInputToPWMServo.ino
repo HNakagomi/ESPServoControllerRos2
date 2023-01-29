@@ -11,23 +11,25 @@
 #include <Ticker.h>
 
 // PIN define
-#define ERROR_LED_PIN 12
-#define OUT_PIN_L 13 // connect to Left Sabertooth input
-#define OUT_PIN_R 14 // connect to Right Sabertooth input
+#define OUT_PIN_L 23 // connect to Left Sabertooth input // 13
+#define OUT_PIN_R 4 // connect to Right Sabertooth input // 14
 
-#define STATUS_LED_ER 15
-#define INTERRUPT_PIN_ER 17 // connect to receiver "5ch" 
-#define INTERRUPT_PIN_L 34 // connect to receiver "1ch" Left Stick
-#define INTERRUPT_PIN_R 16 // connect to receiver "3ch" Right Stick
+#define INTERRUPT_PIN_L 25 // connect to receiver "1ch" Left Stick 34
+#define INTERRUPT_PIN_R 26 // connect to receiver "3ch" Right Stick 16
+#define INTERRUPT_PIN_ER 15 // connect to receiver "5ch"  17
+
+#define ERROR_LED_PIN 0 //12
+#define STATUS_LED_ER 2 //15
+
 
 // read pwm param
 #define INPUT_PWM_T_US 20000// T[us]
 
 // output pwm param
 #define OUTPUT_PWM_T_MS 20// T[ms]
-#define SERVO_HOME 1491// [us]
-#define SERVO_LIMIT_LOW 1050// [us]
-#define SERVO_LIMIT_HIGH 1950// [us]
+#define SERVO_HOME 1520// [us]//1491
+//#define SERVO_LIMIT_LOW 991// [us] 1050
+//#define SERVO_LIMIT_HIGH 1991// [us] 1950
 
 // ros2 define
 #define RCCHECK(fn) { rcl_ret_t temp_rc = fn; if((temp_rc != RCL_RET_OK)){error_loop();}}
@@ -37,6 +39,9 @@
 #define RK_D 0.5 // [m] robot rotation radius
 #define RK_VMAX 8.0 // [v/sec] max speed in Servo LIMIT HIGH
 #define RK_VMIN -8.0 // [v/sec] min speed in Servo LIMIT LOW
+
+volatile int SERVO_LIMIT_LOW = SERVO_HOME - 400;
+volatile int SERVO_LIMIT_HIGH = SERVO_HOME + 400;
 
 // enable rc (block ros2) flag
 volatile bool er_flag = false;
@@ -87,7 +92,7 @@ void interrupt_er_change(){// enable rc
   }
   time_er_change_prev = time_er_change;
 
-  if(time_er_high > SERVO_HOME){ 
+  if(time_er_high > SERVO_LIMIT_HIGH){ 
     er_flag = true;
     digitalWrite(STATUS_LED_ER, HIGH);
   }
